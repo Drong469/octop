@@ -28,6 +28,7 @@
 - Plan 模式把 `plans/*.md` 写回专家工作区，避免 POSIX 默认后端落到容器根目录 `/plans`
 - 对话失败与工具错误写入可检索的服务端日志；聊天里可一键关闭实时 Token 后重试
 - 英文界面残留中文文案：浏览器 AI 助手对话消息、技能录制与回放提示、PWA 安装引导、MBTI 人格标签、侧边栏更新徽标
+- 内置插件「单位换算」在 `value` 为 `inf`/`nan` 或换算结果溢出时返回含 `Infinity`/`NaN` 的信封，该串不是合法 JSON，仪表盘 `JSON.parse` 失败后卡片退化为原始文本；现改为返回 `value must be finite` / `result out of range` 错误卡片。
 
 ## [1.0.2b6] - 2026-10-04
 
