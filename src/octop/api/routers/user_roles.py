@@ -237,7 +237,6 @@ async def patch_user_role(
         from octop.infra.users.profile_avatar import clean_avatar_icon, delete_profile_avatar
 
         avatar_icon = clean_avatar_icon(body.avatar_icon)
-        delete_profile_avatar(server.services.paths.role_avatars_dir, user_role_id)
     if current.is_admin:
         if name is None and description is ... and avatar_icon is ...:
             return _public(server, current)
@@ -252,6 +251,8 @@ async def patch_user_role(
             _name_taken(exc)
             raise
         assert updated is not None
+        if avatar_icon is not ...:
+            delete_profile_avatar(server.services.paths.role_avatars_dir, user_role_id)
         server.services.audit_repo.write(
             actor=actor.username,
             action="user_role.update",
@@ -279,6 +280,8 @@ async def patch_user_role(
         _name_taken(exc)
         raise
     assert updated is not None
+    if avatar_icon is not ...:
+        delete_profile_avatar(server.services.paths.role_avatars_dir, user_role_id)
     server.services.audit_repo.write(
         actor=actor.username,
         action="user_role.update",

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from tests.support.auth import TEST_PASSWORD, bearer, login
 
 
@@ -236,6 +238,77 @@ _PNG = (
     b"\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01"
     b"\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
 )
+
+
+@pytest.mark.parametrize(
+    ("role_id", "patch", "status"),
+    [
+        ("user", {"user_role_name": "Taken role"}, 409),
+        ("admin", {"user_role_name": "Taken role"}, 409),
+        ("user", {"permissions": ["unknown-permission"]}, 400),
+        ("user", {"policies": [{"name": "unknown-policy", "value": "1"}]}, 400),
+    ],
+    ids=["user-name-conflict", "admin-name-conflict", "invalid-permission", "invalid-policy"],
+)
+async def test_rejected_role_patch_preserves_uploaded_avatar(env, role_id, patch, status):
+    c, _srv, auth = env
+    created = await c.post("/api/users/roles", headers=auth, json={"user_role_name": "Taken role"})
+    assert created.status_code == 201, created.text
+    uploaded = await c.post(
+        f"/api/users/roles/{role_id}/avatar",
+        headers=auth,
+        files={"file": ("avatar.png", _PNG, "image/png")},
+    )
+    assert uploaded.status_code == 201, uploaded.text
+    roles = (await c.get("/api/users/roles", headers=auth)).json()
+    before = next(row for row in roles if row["user_role_id"] == role_id)
+
+    rejected = await c.patch(
+        f"/api/users/roles/{role_id}",
+        headers=auth,
+        json={"avatar_icon": "admin", **patch},
+    )
+    assert rejected.status_code == status, rejected.text
+
+    avatar = await c.get(f"/api/users/roles/{role_id}/avatar", headers=auth)
+    assert avatar.status_code == 200, avatar.text
+    assert avatar.content == _PNG
+    roles = (await c.get("/api/users/roles", headers=auth)).json()
+    after = next(row for row in roles if row["user_role_id"] == role_id)
+    assert after == before
+
+
+@pytest.mark.parametrize("role_id", ["user", "admin"])
+@pytest.mark.parametrize("patch", [{"avatar_icon": "admin"}, {"avatar_icon": None}, {}])
+async def test_successful_role_patch_only_removes_avatar_for_explicit_icon(env, role_id, patch):
+    c, _srv, auth = env
+    selected = await c.patch(
+        f"/api/users/roles/{role_id}", headers=auth, json={"avatar_icon": "curly"}
+    )
+    assert selected.status_code == 200, selected.text
+    uploaded = await c.post(
+        f"/api/users/roles/{role_id}/avatar",
+        headers=auth,
+        files={"file": ("avatar.png", _PNG, "image/png")},
+    )
+    assert uploaded.status_code == 201, uploaded.text
+
+    updated = await c.patch(
+        f"/api/users/roles/{role_id}",
+        headers=auth,
+        json={"description": "Updated description", **patch},
+    )
+    assert updated.status_code == 200, updated.text
+    avatar = await c.get(f"/api/users/roles/{role_id}/avatar", headers=auth)
+    if "avatar_icon" in patch:
+        assert updated.json()["avatar_icon"] == patch["avatar_icon"]
+        assert updated.json()["avatar_url"] is None
+        assert avatar.status_code == 404
+    else:
+        assert updated.json()["avatar_icon"] == "curly"
+        assert updated.json()["avatar_url"] == uploaded.json()["avatar_url"]
+        assert avatar.status_code == 200
+        assert avatar.content == _PNG
 
 
 async def test_user_and_role_avatars_roundtrip(env):
