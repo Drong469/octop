@@ -12,6 +12,7 @@ from octop_harness.slash import SlashCommand, SlashSink, thread_message_count
 
 from octop.i18n.domains.agents import agent_error_message
 from octop.i18n.domains.slash import localized_rows, tr
+from octop.infra.agents.providers.model_flags import is_chat_eligible_model
 from octop.infra.gateway.slash.ctx import SlashCtx, ensure_thread_id, lang_of
 from octop.infra.gateway.slash.formatting import (
     format_duration,
@@ -27,6 +28,49 @@ if TYPE_CHECKING:
     from octop.infra.gateway.slash.dispatcher import SlashDispatcher
 
 logger = logging.getLogger(__name__)
+
+# --- /model numbered menu: per-session in-memory cache (lost on restart, harmless) ---
+_model_menu_cache: dict[str, tuple[float, dict[int, str]]] = {}
+_MODEL_MENU_TTL = 600.0  # seconds
+
+
+def _list_usable_model_refs(ctx: SlashCtx) -> list[str]:
+    """Enumerate all usable provider/model refs (same source as runtime usability checks)."""
+    mgr = ctx.agent_manager
+    if mgr is None or getattr(mgr, "providers", None) is None:
+        return []
+    refs: list[str] = []
+    try:
+        for row in mgr.providers.iter_usable_rows():
+            for m in row.get_models():
+                if is_chat_eligible_model(m, provider_name=row.name, provider_api_key=row.api_key):
+                    mid = str(m.get("id") or "").strip()
+                    if mid:
+                        refs.append(f"{row.name}/{mid}")
+    except Exception:
+        logger.warning("model menu: enumerate providers failed", exc_info=True)
+    return refs
+
+
+def _store_menu(session_key: str, refs: list[str]) -> None:
+    _model_menu_cache[session_key] = (time.monotonic(), {i + 1: r for i, r in enumerate(refs)})
+
+
+def _pop_menu_choice(session_key: str, arg: str) -> str | None:
+    """Return the ref for a numeric arg that hits a cached menu, else None."""
+    if not arg.isdigit():
+        return None
+    entry = _model_menu_cache.get(session_key)
+    if not entry:
+        return None
+    ts, mapping = entry
+    if time.monotonic() - ts > _MODEL_MENU_TTL:
+        _model_menu_cache.pop(session_key, None)
+        return None
+    ref = mapping.get(int(arg))
+    if ref is not None:
+        _model_menu_cache.pop(session_key, None)  # one-shot
+    return ref
 
 
 def _format_slash_user(
@@ -296,21 +340,41 @@ async def cmd_status(d: SlashDispatcher, cmd: SlashCommand, ctx: SlashCtx, sink:
     await sink.text(markdown_kv_block(tr("status.title", lang), localized_rows(rows, lang)))
 
 
+def _current_default_model(ctx: SlashCtx) -> str | None:
+    if ctx.agent_manager is not None:
+        row = ctx.agent_manager.get_row(ctx.agent_id)
+        if row is not None:
+            return row.default_model
+    elif ctx.agent_repo is not None:
+        row = ctx.agent_repo.get(ctx.agent_id)
+        if row is not None:
+            return row.default_model
+    return None
+
+
 async def cmd_model(d: SlashDispatcher, cmd: SlashCommand, ctx: SlashCtx, sink: SlashSink) -> None:
     lang = lang_of(ctx)
     tid = await ensure_thread_id(ctx)
     name = cmd.args.strip()
     if not name:
+        # New: no-arg -> show numbered menu of usable models (fallback to the
+        # original override/default hint when enumeration fails or is empty).
+        refs = _list_usable_model_refs(ctx)
+        if refs:
+            _store_menu(ctx.session_key, refs)
+            override = d.get_thread_model_override(ctx, tid)
+            default_model = _current_default_model(ctx)
+            current = override or default_model
+            locale = normalize_locale(lang)
+            lines = [tr("model.menu_header", locale)]
+            for i, ref in enumerate(refs, 1):
+                mark = tr("model.menu_current", locale) if ref == current else ""
+                lines.append(f"{i}. `{ref}`{mark}")
+            lines.append(tr("model.menu_footer", locale))
+            await sink.text("\n".join(lines))
+            return
         override = d.get_thread_model_override(ctx, tid)
-        default_model: str | None = None
-        if ctx.agent_manager is not None:
-            row = ctx.agent_manager.get_row(ctx.agent_id)
-            if row is not None:
-                default_model = row.default_model
-        elif ctx.agent_repo is not None:
-            row = ctx.agent_repo.get(ctx.agent_id)
-            if row is not None:
-                default_model = row.default_model
+        default_model = _current_default_model(ctx)
         if override:
             await sink.text(tr("model.override", lang, model=override))
         elif default_model:
@@ -318,6 +382,10 @@ async def cmd_model(d: SlashDispatcher, cmd: SlashCommand, ctx: SlashCtx, sink: 
         else:
             await sink.text(tr("model.usage", lang))
         return
+    # New: a pure-number arg hitting the cached menu wins over literal refs.
+    chosen = _pop_menu_choice(ctx.session_key, name)
+    if chosen is not None:
+        name = chosen
     if name.lower() == "reset":
         d.clear_thread_model_override(ctx, tid)
         if hasattr(sink, "action"):

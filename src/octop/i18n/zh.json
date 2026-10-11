@@ -108,9 +108,12 @@
       "override": "模型覆盖：{model}",
       "current": "模型：{model}",
       "current_default": "模型：{model}（Agent 默认）",
-      "usage": "无模型覆盖。用法：/model <provider:model>",
+      "usage": "无模型覆盖。用法：/model <provider/model>，或直接发送 /model 查看可选列表。",
       "cleared": "已清除模型覆盖。",
-      "set": "此话题模型 → {model}。"
+      "set": "此话题模型 → {model}。",
+      "menu_header": "可用模型（回复 /model <编号> 切换）：",
+      "menu_current": "  ← 当前",
+      "menu_footer": "回复 /model reset 恢复 Agent 默认；直接 /model <provider/model> 也有效。菜单 10 分钟内有效。"
     },
     "mode": {
       "current": "当前模式：{mode}",
