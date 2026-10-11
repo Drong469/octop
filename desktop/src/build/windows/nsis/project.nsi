@@ -1,4 +1,4 @@
-Unicode true
+﻿Unicode true
 
 # Octop desktop NSIS installer.
 # Built by `wails3 task package` on a Windows runner:
