@@ -54,7 +54,6 @@ def adapt_backend_protocol(backend: Any) -> Any:
         return backend
     wrapped = _LegacyProtocolBackend(backend)
     _patch_s3_list_v1(backend)
-    _patch_sandbox_path_ops(wrapped)
     return wrapped
 
 
