@@ -48,7 +48,7 @@ Chat through the Web Dashboard, Feishu, DingTalk, QQ, WeChat, Telegram, Discord,
 | | Feature | Description |
 |---|---------|-------------|
 | 👥 | **Multi-user expert team** | One admin, shared household; built-in expert library and expert market — switch specialists per scenario |
-| 🤝 | **Expert sharing** | Publish experts and shared skill/sub-agent pools so teammates reuse proven setups instead of rebuilding them |
+| 🤝 | **Cloud collaboration** | Link this Octop to another instance to browse peer experts and chat across instances; history stays on the expert's side |
 | 🎭 | **MBTI personas** | 16 personality templates plus an interactive quiz — give each agent a distinct character |
 | 🎯 | **AgentTeams** *(Beta)* | A coordinator schedules multiple experts on multi-step work; [details](docs/expert-teams.md) |
 | 🔒 | **Security built-in** | JWT multi-user isolation, tool approval, shell command guardrails, and PII redaction — data stays local |
