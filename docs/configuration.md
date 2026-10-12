@@ -16,7 +16,7 @@ on first server start (or by `octop init` / `octop run`).
 │   └── jwt_secret           # 32-byte random; rotate with `octop admin rotate-jwt-secret`
 ├── agents/<agent_id>/       # per-agent workspace (LangGraph state, attachments, …)
 ├── plugins/                 # installed third-party plugins
-├── ssl/                     # self-signed certs when `octop run --ssl` is used without --cert/--key
+├── ssl/                     # self-signed certs when `octop run --ssl` is used without --ssl-certfile/--ssl-keyfile
 ├── logs/                    # rotating log files (when `octop service start` writes a logfile)
 └── octop.log                # default foreground log path
 ```
