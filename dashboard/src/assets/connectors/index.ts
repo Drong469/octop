@@ -24,6 +24,7 @@ import wecomCli from "./wecom-cli.png";
 import weknora from "./weknora.svg";
 import youdaoNote from "./youdao-note.png";
 import yuandian from "./yuandian.png";
+import yuque from "./yuque.png";
 
 export const CONNECTOR_LOGOS: Record<string, string> = {
   "tencent-ardot": tencentArdot,
@@ -52,6 +53,7 @@ export const CONNECTOR_LOGOS: Record<string, string> = {
   "youdao-note": youdaoNote,
   "tencent-weiyun": tencentWeiyun,
   weknora,
+  yuque,
 };
 
 export function getConnectorLogo(kind: string): string | undefined {
