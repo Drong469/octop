@@ -31,6 +31,14 @@ class _RouterMount:
 
 
 _NO_CACHE_DASHBOARD_NAMES = frozenset({"sw.js", "manifest.json", "index.html"})
+# Host MIME associations (notably the Windows registry) can label JS as plain
+# text, which browsers reject for module scripts. Pin Dashboard boot assets.
+_DASHBOARD_MEDIA_TYPES = {
+    ".js": "text/javascript",
+    ".mjs": "text/javascript",
+    ".css": "text/css",
+    ".html": "text/html",
+}
 
 
 def dashboard_cache_control(full_path: str) -> str | None:
@@ -45,7 +53,7 @@ def dashboard_cache_control(full_path: str) -> str | None:
 
 
 def _dashboard_response(path: Path, full_path: str) -> FileResponse:
-    response = FileResponse(path)
+    response = FileResponse(path, media_type=_DASHBOARD_MEDIA_TYPES.get(path.suffix.lower()))
     cache_control = dashboard_cache_control(full_path)
     if cache_control is not None:
         response.headers["Cache-Control"] = cache_control
