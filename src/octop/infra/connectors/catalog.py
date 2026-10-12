@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+from octop.i18n import tr
+
 AuthKind = Literal[
     "personal_token",
     "oauth2",
@@ -514,6 +516,51 @@ _CATALOG: tuple[ConnectorCatalogEntry, ...] = (
         auth_hint="填写长连接智能机器人 Bot ID 与 Secret；主机需已安装 @wecom/cli（wecom-cli）",
     ),
     ConnectorCatalogEntry(
+        kind="agently-cli",
+        name="Agent Mail",
+        description="通过官方 Agent Mail CLI 使用独立 Agent 邮箱（需主机安装 CLI）",
+        auth_kind="custom_fields",
+        doc_url="https://github.com/Tencent/AgentlyMail",
+        icon="agently-cli",
+        color="#0052d9",
+        phase="available",
+        mcp_mode="gateway",
+        category="office",
+        guide_url="https://help.agent.qq.com/detail/0/1092",
+        manual_url="https://agent.qq.com/",
+        auth_hint="先保存连接器，再完成设备码授权；每个实例独立绑定邮箱",
+    ),
+    ConnectorCatalogEntry(
+        kind="obsidian-cli",
+        name="Obsidian",
+        description="通过官方 Obsidian CLI 搜索、阅读和写入指定库中的笔记（需本机运行 Obsidian）",
+        auth_kind="custom_fields",
+        doc_url="https://obsidian.md/cli",
+        icon="obsidian-cli",
+        color="#6c31e3",
+        phase="available",
+        mcp_mode="gateway",
+        category="knowledge",
+        guide_url="https://obsidian.md/zh/cli",
+        manual_url="https://obsidian.md/zh/cli",
+        auth_hint="填写 Obsidian 侧边栏中的库名。Octop 与 Obsidian 需在同一台主机，并已启用 Command line interface。",
+        credential_fields=(
+            ConnectorCredentialField(
+                key="vault",
+                label="库名",
+                placeholder="例如 Notes",
+                help="Obsidian 侧边栏显示的库名，不是文件夹路径",
+            ),
+            ConnectorCredentialField(
+                key="binary_path",
+                label="CLI 路径",
+                required=False,
+                placeholder="/usr/local/bin/obsidian",
+                help="PATH 中已有 obsidian 时可留空",
+            ),
+        ),
+    ),
+    ConnectorCatalogEntry(
         kind="weknora",
         name="WeKnora",
         description="连接 WeKnora 私有知识库，提供只读检索与文档阅读",
@@ -597,7 +644,7 @@ def get_catalog_entry(kind: str) -> ConnectorCatalogEntry | None:
 
 
 def catalog_entry_to_dict(
-    entry: ConnectorCatalogEntry, *, oauth_ready: bool = False
+    entry: ConnectorCatalogEntry, *, oauth_ready: bool = False, locale: str = "en"
 ) -> dict[str, object]:
     from octop.infra.connectors.oauth import oauth_mode_for_kind  # noqa: PLC0415
 
@@ -605,7 +652,9 @@ def catalog_entry_to_dict(
     return {
         "kind": entry.kind,
         "name": entry.name,
-        "description": entry.description,
+        "description": tr("connector.agently.description", locale)
+        if entry.kind == "agently-cli"
+        else entry.description,
         "auth_kind": entry.auth_kind,
         "doc_url": entry.doc_url,
         "icon": entry.icon,
@@ -617,7 +666,9 @@ def catalog_entry_to_dict(
         "login_url": entry.login_url,
         "guide_url": entry.guide_url or entry.doc_url,
         "manual_url": entry.manual_url or entry.guide_url or entry.doc_url,
-        "auth_hint": entry.auth_hint,
+        "auth_hint": tr("connector.agently.auth_hint", locale)
+        if entry.kind == "agently-cli"
+        else entry.auth_hint,
         "oauth_mode": oauth_mode,
         "oauth_ready": oauth_ready,
         "credential_fields": [
