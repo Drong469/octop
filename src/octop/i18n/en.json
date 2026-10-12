@@ -108,9 +108,12 @@
       "override": "Model override: {model}",
       "current": "Model: {model}",
       "current_default": "Model: {model} (agent default)",
-      "usage": "No model override. Usage: /model <provider:model>",
+      "usage": "No model override. Usage: /model <provider/model>, or just send /model to list options.",
       "cleared": "Model override cleared.",
-      "set": "Model for this thread → {model}."
+      "set": "Model for this thread → {model}.",
+      "menu_header": "Available models (reply /model <number> to switch):",
+      "menu_current": "  <- current",
+      "menu_footer": "Reply /model reset to restore the agent default; /model <provider/model> also works. Menu valid for 10 minutes."
     },
     "mode": {
       "current": "Current mode: {mode}",
