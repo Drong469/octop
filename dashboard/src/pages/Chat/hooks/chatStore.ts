@@ -8,6 +8,7 @@
  */
 
 import { getApiUrl } from "../../../api/config";
+import { isPendingThreadId } from "../constants";
 import { getAuthToken } from "../../../api/request";
 import type { TokenUsage } from "../../../api/types";
 import { buildDashboardChatWsUrl } from "../../../api/modules/wsChat";
@@ -2768,7 +2769,7 @@ export async function sendTurn(
   const state = getOrCreate(sessionId);
   rememberRoomAgent(state, agentId);
 
-  if (sessionId === "__pending__" || threadId === "__pending__") {
+  if (isPendingThreadId(sessionId) || isPendingThreadId(threadId ?? "")) {
     appendErrorBubble(
       state,
       "Thread is still being created. Please retry shortly.",
