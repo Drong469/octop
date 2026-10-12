@@ -76,11 +76,23 @@ class ConnectorCatalogEntry:
     mcp_user_agent: str | None = None
     credential_fields: tuple[ConnectorCredentialField, ...] = ()
     remote_transport: RemoteTransport = "raw_http"
+    # Built-in stdio MCP (vendor-shipped CLI / npx package run as a local child
+    # process). When set, ``build_http_mcp_spec`` emits a stdio spec instead of
+    # an HTTP one. ``stdio_env`` values may contain the literal placeholder
+    # ``{token}`` which is substituted with the stored api_key at build time.
+    stdio_command: str | None = None
+    stdio_args: tuple[str, ...] = ()
+    stdio_env: tuple[tuple[str, str], ...] = ()
 
 
 def is_inprocess_gateway(entry: ConnectorCatalogEntry) -> bool:
     """Harness injects Python adapter tools; config is a name-only placeholder."""
     return entry.mcp_mode == "gateway"
+
+
+def is_builtin_stdio(entry: ConnectorCatalogEntry) -> bool:
+    """True when this built-in connector runs a local stdio MCP child process."""
+    return bool(entry.stdio_command)
 
 
 def uses_internal_http_mcp(entry: ConnectorCatalogEntry) -> bool:
@@ -391,6 +403,28 @@ _CATALOG: tuple[ConnectorCatalogEntry, ...] = (
         guide_url="https://www.yuque.com/yuque/developer/api",
         manual_url="https://www.yuque.com/settings/tokens",
         auth_hint="在语雀后台「个人设置 → Token」创建 Personal Access Token 并粘贴到下方（需账号有 API 权限）",
+    ),
+    ConnectorCatalogEntry(
+        kind="yuque-mcp",
+        name="语雀（官方 MCP）",
+        description="通过官方 yuque-mcp 本地进程（stdio）检索与读写语雀知识库、文档",
+        auth_kind="api_key",
+        doc_url="https://www.npmjs.com/package/yuque-mcp",
+        icon="yuque",
+        color="#1ab394",
+        phase="available",
+        mcp_mode="remote",
+        category="knowledge",
+        quick_auth_url="https://www.yuque.com/settings/tokens",
+        guide_url="https://www.npmjs.com/package/yuque-mcp",
+        manual_url="https://www.yuque.com/settings/tokens",
+        auth_hint="在语雀后台「个人设置 → Token」创建 Personal Access Token 并粘贴到下方；需本机安装 Node/npx",
+        stdio_command="npx",
+        stdio_args=("-y", "yuque-mcp"),
+        stdio_env=(
+            ("YUQUE_AUTH_TOKEN", "{token}"),
+            ("YUQUE_BASE_URL", "https://www.yuque.com"),
+        ),
     ),
     ConnectorCatalogEntry(
         kind="qcc",

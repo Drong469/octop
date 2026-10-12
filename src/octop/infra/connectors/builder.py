@@ -11,6 +11,7 @@ from octop.config import OctopConfig
 from octop.infra.connectors.catalog import (
     ConnectorCatalogEntry,
     get_catalog_entry,
+    is_builtin_stdio,
     is_inprocess_gateway,
     is_mcp_oauth_remote,
     uses_internal_http_mcp,
@@ -99,9 +100,37 @@ def build_http_mcp_spec(
     creds: dict[str, Any],
     config: OctopConfig,
 ) -> dict[str, Any]:
+    if is_builtin_stdio(entry):
+        return _build_stdio_spec(entry, creds)
     if entry.mcp_mode == "remote":
         return _build_remote_spec(entry, creds)
     return _build_gateway_spec(entry, instance_id, creds, config)
+
+
+def _build_stdio_spec(
+    entry: ConnectorCatalogEntry,
+    creds: dict[str, Any],
+) -> dict[str, Any]:
+    """Build a stdio MCP spec for a built-in connector that runs a vendor CLI/npx.
+
+    Mirrors the custom-MCP stdio shape consumed by langchain-mcp-adapters
+    (transport/command/args/env). Any ``{token}`` placeholder in ``stdio_env``
+    values is replaced with the stored api_key.
+    """
+    env: dict[str, str] = {}
+    token = str(creds.get("api_key") or creds.get("token") or "").strip()
+    for key, value in entry.stdio_env:
+        env[key] = value.replace("{token}", token)
+    spec: dict[str, Any] = {
+        "transport": "stdio",
+        "command": entry.stdio_command,
+        "args": list(entry.stdio_args),
+    }
+    if env:
+        spec["env"] = env
+    if entry.allowed_tools is not None:
+        spec["allowed_tools"] = list(entry.allowed_tools)
+    return spec
 
 
 def _build_remote_spec(entry: ConnectorCatalogEntry, creds: dict[str, Any]) -> dict[str, Any]:
