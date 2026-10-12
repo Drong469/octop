@@ -19,6 +19,7 @@ from octop.infra.connectors.gateway.adapters import (
     wecom_cli,
     weknora,
     yuandian,
+    yuque,
 )
 
 
@@ -45,6 +46,7 @@ _ADAPTERS: dict[str, GatewayAdapter] = {
     "feishu-cli": feishu_cli,
     "wecom-cli": wecom_cli,
     "weknora": weknora,
+    "yuque": yuque,
 }
 
 
