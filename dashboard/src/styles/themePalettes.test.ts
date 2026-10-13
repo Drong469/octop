@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ANTD_BRAND_TOKENS,
+  DEFAULT_PALETTE,
   VALID_PALETTES,
   brandPrimary,
 } from "./themePalettes";
@@ -36,12 +37,17 @@ describe("theme palettes", () => {
     ]);
   });
 
-  it("keeps the historic Elegant Rose default brand tokens", () => {
+  it("keeps the Elegant Rose brand tokens", () => {
     expect(ANTD_BRAND_TOKENS.rose.light.colorPrimary).toBe("#E85D75");
     expect(ANTD_BRAND_TOKENS.rose.light.colorPrimaryHover).toBe("#D14A62");
     expect(ANTD_BRAND_TOKENS.rose.light.colorPrimaryActive).toBe("#B83A50");
     expect(ANTD_BRAND_TOKENS.rose.dark.colorPrimary).toBe("#F08B9A");
     expect(ANTD_BRAND_TOKENS.rose.dark.colorLink).toBe("#F08B9A");
+  });
+
+  it("defaults to the MetaControl tech brand palette", () => {
+    expect(DEFAULT_PALETTE).toBe("tech");
+    expect(ANTD_BRAND_TOKENS.tech.light.colorPrimary).toBe("#3A5FE0");
   });
 
   it.each(VALID_PALETTES.filter((palette) => palette !== "rose"))(

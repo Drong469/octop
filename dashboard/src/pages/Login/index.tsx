@@ -18,7 +18,6 @@ import {
 import { apiErrorMessage } from "../../utils/apiError";
 import { refreshServerLabels } from "../../i18n";
 import { applyUserLocale, applyGuestLocale } from "../../utils/locale";
-import { useTheme } from "../../context/ThemeContext";
 import {
   isSsoPopup,
   isSsoPopupMessage,
@@ -74,7 +73,6 @@ function providerIcon(provider: OauthProviderStatus): ReactNode {
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  const { isDark } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [username, setUsername] = useState("");
@@ -270,10 +268,8 @@ export default function LoginPage() {
         }}
       >
         <img
-          src={
-            isDark ? "/logo_horizontal_white.png" : "/logo_horizontal_dark.png"
-          }
-          alt="Octop"
+          src="/logo_icon.png"
+          alt="元控智能"
           style={{
             height: 48,
             width: "auto",
