@@ -3,7 +3,7 @@ import { Navigate, useSearchParams } from "react-router-dom";
 import {
   Archive,
   Lock,
-  RefreshCw,
+  // RefreshCw, // 品牌防泄露：隐藏应用更新页（元控智能改造，恢复则取消注释）
   ShieldCheck,
   Variable,
   Activity,
@@ -12,7 +12,8 @@ import EnvironmentsPage from "../Environments";
 import { ObservabilitySettingsPanel } from "../Observability";
 import BackupRestorePanel from "../BackupRestore";
 import { HttpsSettingsPanel } from "../HttpsSettings";
-import UpdateConfig from "./UpdateConfig";
+// 品牌防泄露：隐藏应用更新页（UpdateConfig.tsx 保留不引用，不会进构建产物；恢复则取消注释）
+// import UpdateConfig from "./UpdateConfig";
 import CaptchaSettingsPanel from "./CaptchaSettings";
 import PageShell from "../../../layouts/PageShell";
 import TabBar, { type TabBarItem } from "../../../components/TabLabel/TabBar";
@@ -35,7 +36,7 @@ const TABS: TabBarItem<TabKey>[] = [
   { key: "backup", labelKey: "nav.backupRestore", icon: Archive },
   { key: "https", labelKey: "nav.https", icon: Lock },
   { key: "captcha", labelKey: "nav.loginCaptcha", icon: ShieldCheck },
-  { key: "updates", labelKey: "nav.checkUpdates", icon: RefreshCw },
+  // { key: "updates", labelKey: "nav.checkUpdates", icon: RefreshCw }, // 品牌防泄露：隐藏应用更新 tab
 ];
 
 function parseTab(raw: string | null): TabKey {
@@ -43,7 +44,7 @@ function parseTab(raw: string | null): TabKey {
     raw === "observability" ||
     raw === "backup" ||
     raw === "https" ||
-    raw === "updates" ||
+    // raw === "updates" || // 品牌防泄露：隐藏应用更新 tab
     raw === "captcha"
   ) {
     return raw;
@@ -81,8 +82,8 @@ export default function AdvancedSettingsPage() {
         return <BackupRestorePanel />;
       case "https":
         return <HttpsSettingsPanel />;
-      case "updates":
-        return <UpdateConfig />;
+      // case "updates": // 品牌防泄露：隐藏应用更新 tab
+      //   return <UpdateConfig />;
       case "captcha":
         return <CaptchaSettingsPanel />;
     }

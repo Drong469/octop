@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import AvatarDropdown from "../components/AvatarDropdown";
-import AppVersionBadge from "../components/AppVersionBadge";
-import CurrentVersionBadge from "../components/CurrentVersionBadge";
+// 品牌防泄露：隐藏版本徽章（元控智能改造，恢复则取消注释）
+// import AppVersionBadge from "../components/AppVersionBadge";
+// import CurrentVersionBadge from "../components/CurrentVersionBadge";
 import { ArrowRightLeft, ChevronDown, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useLayoutMode } from "../context/LayoutModeContext";
@@ -493,7 +494,7 @@ export default function Sidebar({
     <>
       <img
         src={isRailCollapsed ? "/pwa-192.png" : wordmarkSrc}
-        alt="Octop"
+        alt="元控智能"
         style={{
           height: isRailCollapsed ? 32 : isMobile ? 38 : 36,
           width: isRailCollapsed ? 32 : "auto",
@@ -504,12 +505,14 @@ export default function Sidebar({
           borderRadius: isRailCollapsed ? 8 : undefined,
         }}
       />
+      {/* 品牌防泄露：隐藏版本徽章（元控智能改造，恢复则取消注释）
       {!isRailCollapsed && !isMobile && (
         <>
           <CurrentVersionBadge isMobile={isMobile} />
           <AppVersionBadge isMobile={isMobile} />
         </>
       )}
+      */}
     </>
   );
 

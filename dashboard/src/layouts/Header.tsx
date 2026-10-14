@@ -1,8 +1,9 @@
 import { Layout } from "antd";
 import { Menu as MenuIcon } from "lucide-react";
 import PwaInstallPrompt from "../components/PwaInstallPrompt";
-import AppVersionBadge from "../components/AppVersionBadge";
-import CurrentVersionBadge from "../components/CurrentVersionBadge";
+// 品牌防泄露：隐藏版本徽章（元控智能改造，恢复则取消注释）
+// import AppVersionBadge from "../components/AppVersionBadge";
+// import CurrentVersionBadge from "../components/CurrentVersionBadge";
 import { useTheme } from "../context/ThemeContext";
 import { typeSize } from "../utils/mobileTypeScale";
 
@@ -79,7 +80,7 @@ export default function Header({ onToggle, isMobile }: HeaderProps) {
         )}
         <img
           src={mobileLogoSrc}
-          alt="octop"
+          alt="元控智能"
           style={{
             height: 36,
             width: "auto",
@@ -89,6 +90,7 @@ export default function Header({ onToggle, isMobile }: HeaderProps) {
             display: "block",
           }}
         />
+        {/* 品牌防泄露：隐藏版本徽章（元控智能改造，恢复则取消注释）
         <div
           style={{
             display: "flex",
@@ -101,6 +103,7 @@ export default function Header({ onToggle, isMobile }: HeaderProps) {
           <CurrentVersionBadge isMobile />
           <AppVersionBadge isMobile />
         </div>
+        */}
       </div>
 
       <div
