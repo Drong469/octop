@@ -2526,6 +2526,7 @@ dependencies = [
     { name = "octop-gateway" },
     { name = "octop-harness", extra = ["all"] },
     { name = "octop-memory" },
+    { name = "ollama" },
     { name = "openpyxl" },
     { name = "pillow" },
     { name = "playwright" },
@@ -2615,6 +2616,7 @@ requires-dist = [
     { name = "octop-gateway", specifier = ">=1.0.0" },
     { name = "octop-harness", extras = ["all"], specifier = ">=1.0.2" },
     { name = "octop-memory", specifier = ">=1.0.1" },
+    { name = "ollama", specifier = ">=0.6.3" },
     { name = "onnxruntime", marker = "extra == 'knowledge-ocr'", specifier = ">=1.17" },
     { name = "openpyxl", specifier = ">=3.1" },
     { name = "pillow", specifier = ">=10.0" },
@@ -2753,6 +2755,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/44/56/04f1f5ba2b099ac0243f425beea61ee483feb090633ad1140c2c2336cd05/octop_memory-1.0.1.tar.gz", hash = "sha256:8750dee56dbbb43bbb41ff868d85a6e5efcf4aad20f140e0675213647cd52c22", size = 581647, upload-time = "2026-10-09T13:28:34.804Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/90/97/6caca9107a003db4373f83390d2bb3f0ff6756b150df0b5f489b9cd2a0cb/octop_memory-1.0.1-py3-none-any.whl", hash = "sha256:e8d1a2394ebdef1544b873d6f9adecf478756b8b540185369595d119bffdb82e", size = 376410, upload-time = "2026-10-09T13:28:33.484Z" },
+]
+
+[[package]]
+name = "ollama"
+version = "0.6.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b8/97/eeafe65594e4f4b25e443e068ef7d83aa3105b023e12e1c408c38669fc07/ollama-0.6.3.tar.gz", hash = "sha256:41fc49a8095c4a75939c4c1f8582e4d0671692fb6eac2a5a7ede8c9872b67096", size = 56868, upload-time = "2026-09-29T01:26:51.906Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/64/87505d9e006461233c21c8e66dc1ecee49c996090584b216abd0dd4a8322/ollama-0.6.3-py3-none-any.whl", hash = "sha256:6a20bc42c1a5f889295d7ec490d35e5132fc31f339561530f43a8abd4dbfe508", size = 16603, upload-time = "2026-09-29T01:26:50.451Z" },
 ]
 
 [[package]]
