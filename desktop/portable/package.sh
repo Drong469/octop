@@ -247,6 +247,18 @@ assemble_one() {
     }
   fi
 
+  # Bundle OfficeCLI beside the portable interpreter: launch.py puts runtime/ on
+  # PATH, so agent shells can call `officecli` directly (see office-suite skill).
+  if [[ "$plat" == windows-* ]]; then
+    local officecli_bin="${OFFICECLI_WIN_BIN:-${REPO_ROOT}/.artifacts/officecli/officecli.exe}"
+    if [[ -f "$officecli_bin" ]]; then
+      cp -f "$officecli_bin" "${staging}/runtime/officecli.exe"
+      echo "[package] ${plat}: bundled OfficeCLI → runtime/officecli.exe" >&2
+    else
+      echo "[package] WARNING: OfficeCLI binary not found at ${officecli_bin} — office-suite skill will be non-functional" >&2
+    fi
+  fi
+
   # macOS: reject Homebrew-linked native extensions before zipping.
   verify_no_homebrew_dylibs "${staging}/packages" "$plat"
 

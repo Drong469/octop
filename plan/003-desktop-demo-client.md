@@ -72,6 +72,7 @@
 壳测试时发现版本号与更新页暴露上游痕迹，已注释式移除（用户要求：不删除，便于恢复）：
 - `layouts/Sidebar.tsx` / `layouts/Header.tsx`：版本徽章（`AppVersionBadge`/`CurrentVersionBadge`）渲染与 import 注释掉；顺带把两处图片 `alt` 从 "Octop" 改为 "元控智能"；
 - `Settings/AdvancedSettings/index.tsx`：「应用更新」tab 的注册/渲染/URL 解析/import 注释掉；`UpdateConfig.tsx` 文件保留不引用——内含腾讯 COS 安装脚本链接，摇树剔除后**不进构建产物**；
+- `components/AvatarDropdown.tsx`（D4 后补）：头像菜单「项目地址」（腾讯仓库直链）、「帮助与反馈」（上游官网）、「检查更新」（指向已移除的更新页）三个入口注释掉，连带常量与 import；
 - 验证：tsc 通过、Header 测试 3/3、前端已重建；
 - 遗留备忘（部署阶段处理）：后端自动检查更新的逻辑仍在（当前最新=当前版本所以静默），上游发新版后可能推送"新版本可用"通知，届时查后端关闭自动检查的配置项。
 

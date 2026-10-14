@@ -1,6 +1,6 @@
 ---
 name: docx
-description: "当用户需要创建、读取、编辑或处理 Word 文档（.docx）时，使用此技能。触发场景包括提到“Word 文档”、“.docx”，或要求生成带目录、标题、页码、信头等格式的专业文档；也包括提取或重组 .docx 内容、插入或替换图片、在 Word 文件中查找替换、处理修订或批注，以及将内容整理为正式 Word 文档。如果用户要求生成“报告”“备忘录”“信函”“模板”等 Word / .docx 交付物，也应使用此技能。不要用于 PDF、电子表格、Google Docs，或与文档生成无关的一般编程任务。"
+description: "当用户需要创建、读取、编辑或处理 Word 文档（.docx）时，使用此技能。触发场景包括提到“Word 文档”、“.docx”，或要求生成带目录、标题、页码、信头等格式的专业文档；也包括提取或重组 .docx 内容、插入或替换图片、在 Word 文件中查找替换、处理修订或批注，以及将内容整理为正式 Word 文档。如果用户要求生成“报告”“备忘录”“信函”“模板”等 Word / .docx 交付物，也应使用此技能。不要用于 PDF、电子表格、Google Docs，或与文档生成无关的一般编程任务。创建新的 Word 文档时，优先使用内置 office-suite 技能（officecli，零依赖）；本技能用于读取、分析与深度编辑现有文档。"
 license: Proprietary. LICENSE.txt has complete terms
 metadata:
   builtin_skill_version: "1.1"
@@ -28,6 +28,7 @@ metadata:
 - **pdftoppm** (poppler-utils): 文档转图片工作流
 - 如果 `pdftoppm` 不可用，Python 备用路径可能使用 `pdf2image`。
 - 在 Windows 上，依赖项必须已安装并在 `PATH` 中可用；如缺失，请报告依赖问题并停止（不要反复重试）。
+- 创建新文档无需上述依赖：优先使用内置 `office-suite` 技能（officecli）。
 
 ## 概述
 
@@ -323,7 +324,7 @@ python scripts/office/unpack.py document.docx unpacked/
 
 编辑 `unpacked/word/` 中的文件。参见下方的 XML 参考获取相关模式。
 
-**使用 "Claude" 作为作者**来添加修订和批注，除非用户明确要求使用其他名称。
+**使用 "元控智能" 作为作者**来添加修订和批注，除非用户明确要求使用其他名称。
 
 **直接使用 Edit 工具进行字符串替换。不要编写 Python 脚本。**脚本会引入不必要的复杂性。Edit 工具能准确显示被替换的内容。
 
@@ -379,14 +380,14 @@ python scripts/office/pack.py unpacked/ output.docx --original document.docx
 
 **插入:**
 ```xml
-<w:ins w:id="1" w:author="Claude" w:date="2025-01-01T00:00:00Z">
+<w:ins w:id="1" w:author="元控智能" w:date="2025-01-01T00:00:00Z">
   <w:r><w:t>inserted text</w:t></w:r>
 </w:ins>
 ```
 
 **删除:**
 ```xml
-<w:del w:id="2" w:author="Claude" w:date="2025-01-01T00:00:00Z">
+<w:del w:id="2" w:author="元控智能" w:date="2025-01-01T00:00:00Z">
   <w:r><w:delText>deleted text</w:delText></w:r>
 </w:del>
 ```
@@ -397,10 +398,10 @@ python scripts/office/pack.py unpacked/ output.docx --original document.docx
 ```xml
 <!-- 将 "30 days" 改为 "60 days" -->
 <w:r><w:t>The term is </w:t></w:r>
-<w:del w:id="1" w:author="Claude" w:date="...">
+<w:del w:id="1" w:author="元控智能" w:date="...">
   <w:r><w:delText>30</w:delText></w:r>
 </w:del>
-<w:ins w:id="2" w:author="Claude" w:date="...">
+<w:ins w:id="2" w:author="元控智能" w:date="...">
   <w:r><w:t>60</w:t></w:r>
 </w:ins>
 <w:r><w:t> days.</w:t></w:r>
@@ -412,10 +413,10 @@ python scripts/office/pack.py unpacked/ output.docx --original document.docx
   <w:pPr>
     <w:numPr>...</w:numPr>  <!-- 列表编号（如存在） -->
     <w:rPr>
-      <w:del w:id="1" w:author="Claude" w:date="2025-01-01T00:00:00Z"/>
+      <w:del w:id="1" w:author="元控智能" w:date="2025-01-01T00:00:00Z"/>
     </w:rPr>
   </w:pPr>
-  <w:del w:id="2" w:author="Claude" w:date="2025-01-01T00:00:00Z">
+  <w:del w:id="2" w:author="元控智能" w:date="2025-01-01T00:00:00Z">
     <w:r><w:delText>Entire paragraph content being deleted...</w:delText></w:r>
   </w:del>
 </w:p>
@@ -425,7 +426,7 @@ python scripts/office/pack.py unpacked/ output.docx --original document.docx
 **拒绝其他作者的插入** - 将删除嵌套在其插入内部:
 ```xml
 <w:ins w:author="Jane" w:id="5">
-  <w:del w:author="Claude" w:id="10">
+  <w:del w:author="元控智能" w:id="10">
     <w:r><w:delText>their inserted text</w:delText></w:r>
   </w:del>
 </w:ins>
@@ -436,7 +437,7 @@ python scripts/office/pack.py unpacked/ output.docx --original document.docx
 <w:del w:author="Jane" w:id="5">
   <w:r><w:delText>deleted text</w:delText></w:r>
 </w:del>
-<w:ins w:author="Claude" w:id="10">
+<w:ins w:author="元控智能" w:id="10">
   <w:r><w:t>deleted text</w:t></w:r>
 </w:ins>
 ```
@@ -450,7 +451,7 @@ python scripts/office/pack.py unpacked/ output.docx --original document.docx
 ```xml
 <!-- 批注标记是 w:p 的直接子元素，绝不在 w:r 内部 -->
 <w:commentRangeStart w:id="0"/>
-<w:del w:id="1" w:author="Claude" w:date="2025-01-01T00:00:00Z">
+<w:del w:id="1" w:author="元控智能" w:date="2025-01-01T00:00:00Z">
   <w:r><w:delText>deleted</w:delText></w:r>
 </w:del>
 <w:r><w:t> more text</w:t></w:r>

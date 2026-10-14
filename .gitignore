@@ -3,6 +3,7 @@ build/
 !desktop/src/build/
 !desktop/src/build/**
 dist/
+.artifacts/
 
 # OS
 .DS_Store

@@ -12,12 +12,13 @@ def test_skill_display_name_known_zh():
     assert skill_display_name("pdf", "zh") == "PDF 处理"
 
 
-def test_skill_display_name_octop_assistant_slug_zh():
-    assert skill_display_name("octop-assistant", "zh") == "Octop 助手"
+def test_skill_display_name_metacontrol_assistant_zh():
+    assert skill_display_name("metacontrol-assistant", "zh") == "元控智能 助手"
 
 
-def test_skill_display_name_octop_assistant_name_zh():
-    assert skill_display_name("octop_assistant", "zh") == "Octop 助手"
+def test_skill_display_name_legacy_octop_assistant_zh():
+    assert skill_display_name("octop-assistant", "zh") == "元控智能 助手"
+    assert skill_display_name("octop_assistant", "zh") == "元控智能 助手"
 
 
 def test_skill_display_name_unknown_passthrough():
@@ -31,7 +32,8 @@ def test_skill_display_name_empty_passthrough():
 def test_all_skill_labels_includes_pdf():
     labels = all_skill_labels("en")
     assert labels["docx"] == "Word"
-    assert labels["octop-assistant"] == "Octop Assistant"
+    assert labels["metacontrol-assistant"] == "MetaControl AI Assistant"
+    assert labels["octop-assistant"] == "MetaControl AI Assistant"
 
 
 def test_dashboard_skill_labels_match_backend():
