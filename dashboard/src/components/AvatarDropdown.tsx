@@ -18,9 +18,9 @@ import {
   ChevronUp,
   Settings,
   Palette,
-  CircleHelp,
-  Github,
-  RefreshCw,
+  // CircleHelp, // 品牌防泄露：隐藏帮助与反馈外链（恢复则取消注释）
+  // Github, // 品牌防泄露：隐藏项目地址外链
+  // RefreshCw, // 品牌防泄露：隐藏检查更新入口
   KeyRound,
   Lock,
   LockOpen,
@@ -45,7 +45,7 @@ import PaletteSwitcher from "./PaletteSwitcher";
 import type { OctopUser } from "../api/modules/auth";
 import { useLayoutMode } from "../context/LayoutModeContext";
 import type { LayoutMode } from "../layouts/layoutModeStorage";
-import { userCan } from "../utils/permissions";
+// import { userCan } from "../utils/permissions"; // 品牌防泄露：随检查更新入口一起注释（恢复则取消注释）
 import feishuIcon from "../assets/channels/feishu.svg";
 import dingtalkIcon from "../assets/channels/dingtalk.svg";
 import wecomIcon from "../assets/channels/wecom.svg";
@@ -55,8 +55,9 @@ import {
 } from "../pages/Admin/Users/ProfileAvatar";
 import styles from "./AvatarDropdown.module.less";
 
-const GITHUB_URL = "https://github.com/TencentCloud/Octop";
-const HELP_FEEDBACK_URL = "https://octop.cloud";
+// 品牌防泄露：隐藏上游项目/官网外链（恢复则取消注释）
+// const GITHUB_URL = "https://github.com/TencentCloud/Octop";
+// const HELP_FEEDBACK_URL = "https://octop.cloud";
 const APP_OAUTH_KINDS = new Set(["feishu", "dingtalk", "wecom"]);
 
 const PASSWORD_FIELD_ICON_PROPS = {
@@ -369,6 +370,7 @@ export default function AvatarDropdown({
         <ThemeSwitcher compact />
       </div>
 
+      {/* 品牌防泄露：隐藏帮助与反馈/项目地址上游外链（恢复则取消注释）
       <a
         className={styles.menuItem}
         href={HELP_FEEDBACK_URL}
@@ -390,6 +392,7 @@ export default function AvatarDropdown({
         <Github size={16} strokeWidth={1.8} />
         <span>{t("account.projectUrl")}</span>
       </a>
+      */}
 
       {onCustomizeNav ? (
         <button
@@ -412,6 +415,7 @@ export default function AvatarDropdown({
         <span>{t("account.changePassword")}</span>
       </button>
 
+      {/* 品牌防泄露：隐藏检查更新入口（指向已移除的更新页；恢复则取消注释）
       {userCan(user, "update") && (
         <button
           type="button"
@@ -425,6 +429,7 @@ export default function AvatarDropdown({
           <span>{t("account.checkUpdates")}</span>
         </button>
       )}
+      */}
 
       <Divider className={styles.menuDivider} />
 
