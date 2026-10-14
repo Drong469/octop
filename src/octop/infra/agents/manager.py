@@ -12,6 +12,7 @@ import time
 from collections.abc import AsyncIterator, Awaitable, Callable, Sequence
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass, field, fields, replace
+from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
@@ -203,6 +204,12 @@ def _memory_aux_model_settings(
         return {}
     # One user-chosen model drives both extraction tiers.
     return {"memory_aux_light_model": ref, "memory_aux_heavy_model": ref}
+
+
+@lru_cache(maxsize=1)
+def _global_identity_prompt() -> str:
+    """Product identity prepended to every agent's system prompt."""
+    return Path(__file__).with_name("global_identity.md").read_text(encoding="utf-8").strip()
 
 
 def _memory_extract_settings(
@@ -3745,7 +3752,11 @@ class AgentManager:
                 self._providers.resolve_explicit_default_model(row, cfg)
                 or self.resolve_fallback_model_ref()
             ),
-            system_prompt=system_prompt,
+            system_prompt=(
+                f"{_global_identity_prompt()}\n\n{system_prompt}"
+                if system_prompt
+                else _global_identity_prompt()
+            ),
             memory=memory,
             backend=harness_backend,  # spec, or live OpenSandbox instance
             mcp_server_configs=mcp_server_configs,

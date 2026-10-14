@@ -864,10 +864,12 @@ def _fs_backend(ws: Path) -> dict[str, str]:
     return {"type": "filesystem", "root_dir": str(ws), "virtual_mode": False}
 
 
-def test_build_harness_config_suppresses_system_prompt_while_bootstrap_pending(
+def test_build_harness_config_keeps_identity_only_while_bootstrap_pending(
     manager: AgentManager,
 ) -> None:
     from dataclasses import replace
+
+    from octop.infra.agents.manager import _global_identity_prompt
 
     agent_id = "AGT_BOOT"
     ws = manager._paths.ensure_agent_workspace(agent_id)
@@ -877,7 +879,9 @@ def test_build_harness_config_suppresses_system_prompt_while_bootstrap_pending(
         config_json=json.dumps({"backend": _fs_backend(ws)}),
     )
     cfg = manager._build_harness_config(row)
-    assert cfg.system_prompt is None
+    # Persona/DB system prompt is suppressed until bootstrap completes, but the
+    # global product identity applies from the very first turn.
+    assert cfg.system_prompt == _global_identity_prompt()
     assert cfg.memory == ()
 
 
@@ -912,7 +916,9 @@ def test_build_harness_config_keeps_system_prompt_after_bootstrap(
         config_json=json.dumps({"backend": _fs_backend(ws)}),
     )
     cfg = manager._build_harness_config(row)
-    assert cfg.system_prompt == "MBTI persona prompt"
+    from octop.infra.agents.manager import _global_identity_prompt
+
+    assert cfg.system_prompt == f"{_global_identity_prompt()}\n\nMBTI persona prompt"
 
 
 def test_bootstrap_complete_defers_graph_refresh(manager: AgentManager) -> None:
@@ -1424,9 +1430,11 @@ def test_build_harness_config_keeps_fs_permissions_for_local_shell_guard(
 
 
 def test_build_harness_config_without_default_model(manager: AgentManager) -> None:
+    from octop.infra.agents.manager import _global_identity_prompt
+
     cfg = manager._build_harness_config(_row())
     assert cfg.name == "agent_01AGENT"
-    assert cfg.system_prompt is None
+    assert cfg.system_prompt == _global_identity_prompt()
     assert cfg.backend == _expected_default_backend(manager, "01AGENT")
 
 

@@ -33,7 +33,10 @@ ManifestDPIAware true
 !define MUI_UNICON "..\icon.ico"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_ABORTWARNING
-!define MUI_FINISHPAGE_RUN "$INSTDIR\${PRODUCT_EXECUTABLE}"
+; Launch via explorer.exe so the app runs with the user's (non-elevated) token;
+; a direct child of the elevated installer may fail to start silently.
+!define MUI_FINISHPAGE_RUN "$WINDIR\explorer.exe"
+!define MUI_FINISHPAGE_RUN_PARAMETERS "$\"$INSTDIR\${PRODUCT_EXECUTABLE}$\""
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_DIRECTORY
@@ -68,6 +71,12 @@ FunctionEnd
 Section
     !insertmacro wails.setShellContext
 
+    ; Kill a running instance first: it locks files and breaks overwrite install.
+    DetailPrint "Closing running instance..."
+    nsExec::Exec 'taskkill /F /T /IM "${PRODUCT_EXECUTABLE}"'
+    Pop $0
+    Sleep 800
+
     !insertmacro wails.webview2runtime
 
     SetOutPath $INSTDIR
@@ -85,6 +94,20 @@ SectionEnd
 
 Section "uninstall"
     !insertmacro wails.setShellContext
+
+    ; Kill the running instance first: locked files make RMDir silently skip.
+    DetailPrint "Closing running instance..."
+    nsExec::Exec 'taskkill /F /T /IM "${PRODUCT_EXECUTABLE}"'
+    Pop $0
+    Sleep 800
+
+    ; The portable runtime is a program asset (not user data), remove it too.
+    ; Everything else under .octop (agents, DB, backups) is kept by design.
+    ReadEnvStr $0 "OCTOP_HOME"
+    ${If} $0 == ""
+        StrCpy $0 "$PROFILE\.octop"
+    ${EndIf}
+    RMDir /r "$0\portable"
 
     RMDir /r "$AppData\${PRODUCT_EXECUTABLE}"
 

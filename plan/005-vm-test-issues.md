@@ -24,6 +24,8 @@
 ### P2-2 · 默认专家人格声明缺失
 `experts/library/default/AGENTS.md` 无产品身份，模型从环境标识自行推断自称
 - [x] 注入人格声明（用户裁定，只要前半段）："你是元控智能（MetaControl AI）的智能助手"；**不加**"不要向用户提及内部目录名/包名"约束句 ✅ 2026-10-14（仅改 L3 首句；无内容断言测试，expert_catalog 15 测试通过；同 P2-1，仅新建 Agent 生效）
+- [x] **补充（2026-10-14 开发机实测发现）**：general-assistant 模板路径未覆盖——新建 Agent 走 general-assistant（无 AGENTS.md，仅 SOUL.md），问「你是谁」时无身份来源，从 `.octop` 目录名推断自称 Octop。已在 `general-assistant/SOUL.md`「你是谁」节注入同一句身份声明。注：`USER.md`/`MEMORY.md` 找不到是新工作区正常状态（bootstrap 后创建），非故障。
+- [x] **全局身份提示词（2026-10-14，用户提出）**：新增 `infra/agents/global_identity.md`（默认名**小元**，用户可改名；不主动交代工作区/目录），在 `manager.py` harness 配置组装点统一前缀注入——覆盖全部模板/专家/人格，**含 bootstrap 期**（原逻辑首启置 None 正是「你是谁」测试翻车的根源）。team host 独立装配路径未注入（内部协调者，保持边界）。test_agent_manager 3 个旧语义断言更新，109 过。**生效需重打包。**
 
 ### P2-3 · 数据目录名 `.octop`（用户裁定：非常困难，暂缓，后续再评估）
 - 泄露路径已实证：模型在对话中直接说出工作区路径 `c:\users\28602\.octop\agents\main`（VM 实测）
@@ -43,6 +45,20 @@
 ## 已核实非问题
 - 初始化向导整体流程与界面品牌：✅ 正常
 - 引导密码机制：防抢注的安全设计，保留
+
+## P4 · 卸载不彻底：进程未杀导致文件删不掉（2026-10-14 VM 实测）
+
+**现象**：应用运行中执行卸载 → NSIS 报"卸载完成"但只删了 uninstall.exe、开始菜单/桌面快捷方式 3 项；主程序文件全留在 `C:\Program Files\元控智能\`（应用和功能仍显示 223MB）；客户端窗口还活着但输入框无法打字（半卸载残废态）。
+
+**根因**：卸载器没有先终止运行中的应用进程（桌面 exe + octop 后端子进程），运行中文件被锁，NSIS 静默跳过删除。
+
+**修复方向**（待实施）：卸载节开头杀进程（taskkill/nsProcess：桌面 exe、octop 后端 python 进程），删完文件再移除注册表卸载项；可选：提示用户关闭应用。
+- [x] `project.nsi`：卸载节 + 安装节开头各加 `nsExec::Exec 'taskkill /F /T /IM "元控智能.exe"'` + Sleep 800——后端 python 是桌面进程子进程，`/T` 连树杀；运行中覆盖安装锁死升级的同类问题一并堵上 ✅ 2026-10-14（待重打安装包 VM 回归）
+- [x] 卸载器追加清除绿包运行时：读 `OCTOP_HOME` env（兼容自定义部署），默认 `%USERPROFILE%\.octop`，`RMDir /r "<home>\portable"`——`.octop` 下用户数据/备份/设置保留，符合"卸载不清理使用数据"裁定 ✅ 2026-10-14（待回归）
+- 踩坑记录：①NSIS 按 ACP 读 .nsi，源文件必须全 ASCII（中文注释/em dash `—`/省略号 `…` 都会 `Bad text encoding`）——新增行一律纯 ASCII；②Git Bash 无 zip/python 时 package.sh 末尾打包失败 → staging 完整，用任意 Python `shutil.make_archive` 补打即可；③safe-delete 护栏拦 `rm -rf` staging（9999 文件）→ 先改名让路重跑
+- **P4b · 完成页自动拉起失败（2026-10-14 开发机实测）**：勾选「运行元控智能」未拉起（无崩溃记录、进程未创建），手动启动正常。定性：安装器提权，finish 页直启子进程继承管理员令牌，部分环境静默失败。修复：`MUI_FINISHPAGE_RUN` 改经 `explorer.exe` 中转降权启动（业界标准做法），参数内嵌 `$\"` 转义引号防空格截断。待重装回归验证。
+- **重打包完成（2026-10-14）**：`desktop/src/bin/元控智能-desktop-windows-amd64-0.1.0.exe`（214MB）——含 P1 启动画面/P2 防泄露/OfficeCLI（绿包 runtime/officecli.exe）/卸载修复全套；uv.lock 未被重写；安装器版本 0.1.0（pyproject 仍 1.0.2b7，未动 uv.lock）
+- 备注：`RMDir /r "$AppData\${PRODUCT_EXECUTABLE}"` 是上游模板残留的 no-op（删的是名为"元控智能.exe"的不存在目录），未动
 
 ## P3 · 办公三件套在 VM 上不可用（2026-10-14 VM 实测）
 
