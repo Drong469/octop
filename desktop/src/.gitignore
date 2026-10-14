@@ -1,1 +1,5 @@
+bin/
+.task/
+build/windows/info.generated.json
+build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
 build/windows/nsis/version_defines.nsh
