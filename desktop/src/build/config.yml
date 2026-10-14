@@ -5,11 +5,11 @@
 version: "3"
 
 info:
-  companyName: "Octop"
-  productName: "Octop"
-  productIdentifier: "com.tencent.octop"
-  description: "Octop desktop shell"
-  copyright: "(c) 2026, Octop"
+  companyName: "MetaControl AI"
+  productName: "元控智能"
+  productIdentifier: "com.metacontrol.ai"
+  description: "元控智能桌面客户端"
+  copyright: "(c) 2026, MetaControl AI"
   comments: "Wails v3 + green portable"
   version: "0.9.26"
 

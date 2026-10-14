@@ -5,11 +5,11 @@
   "info": {
     "0000": {
       "ProductVersion": "0.9.26",
-      "CompanyName": "Octop",
-      "FileDescription": "Octop desktop",
+      "CompanyName": "MetaControl AI",
+      "FileDescription": "元控智能桌面客户端",
       "LegalCopyright": "Copyright © 2026",
-      "ProductName": "Octop",
-      "Comments": "Octop desktop shell"
+      "ProductName": "元控智能",
+      "Comments": "元控智能桌面壳"
     }
   }
 }
