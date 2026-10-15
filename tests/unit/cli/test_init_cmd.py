@@ -61,7 +61,7 @@ def test_init_allows_sidecar_files_without_database(fake_home: Path) -> None:
     """NAS / Docker shares often have login.txt before the first octop.db exists."""
     home = fake_home / ".octop"
     home.mkdir()
-    (home / "octop-login.txt").write_text("placeholder\n", encoding="utf-8")
+    (home / "login.txt").write_text("placeholder\n", encoding="utf-8")
     runner = CliRunner()
     result = runner.invoke(
         cli,
@@ -76,7 +76,7 @@ def test_init_allows_sidecar_files_without_database(fake_home: Path) -> None:
     )
     assert result.exit_code == 0, result.output
     assert (home / "octop.db").is_file()
-    assert (home / "octop-login.txt").read_text(encoding="utf-8") == "placeholder\n"
+    assert (home / "login.txt").read_text(encoding="utf-8") == "placeholder\n"
 
 
 def test_init_refuses_to_overwrite_without_force(fake_home: Path) -> None:

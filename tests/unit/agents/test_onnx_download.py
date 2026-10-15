@@ -21,6 +21,7 @@ from octop.infra.agents.providers.onnx_download import (
     cos_file_url,
     download_model_raced,
     export_model_tree_for_cos,
+    heal_hf_cache_refs,
     race_download_sources,
 )
 
@@ -305,9 +306,22 @@ def test_cos_download_writes_hf_cache(monkeypatch, tmp_path: Path) -> None:
     snapshot = cache / "models--Qdrant--bge-small-zh-v1.5" / "snapshots" / "cos-mirror"
     assert (snapshot / "config.json").read_text(encoding="utf-8") == '{"hidden_size": 512}'
     assert (snapshot / "model.onnx").read_bytes() == b"onnx-bytes"
-    assert (cache / "models--Qdrant--bge-small-zh-v1.5" / "refs" / "main").read_text(
-        encoding="utf-8"
-    ).strip() == "cos-mirror"
+    # huggingface_hub >= 1.x reads refs without stripping: the revision must be
+    # written bare or local cache probes silently fail.
+    ref = cache / "models--Qdrant--bge-small-zh-v1.5" / "refs" / "main"
+    assert ref.read_text(encoding="utf-8") == "cos-mirror"
+
+
+def test_heal_hf_cache_refs_strips_trailing_newline(tmp_path: Path) -> None:
+    repo = tmp_path / "models--Qdrant--bge-small-zh-v1.5"
+    ref = repo / "refs" / "main"
+    ref.parent.mkdir(parents=True)
+    ref.write_text("cos-mirror\n", encoding="utf-8")
+
+    assert heal_hf_cache_refs(tmp_path) == 1
+    assert ref.read_text(encoding="utf-8") == "cos-mirror"
+    # Clean refs are left untouched and not counted.
+    assert heal_hf_cache_refs(tmp_path) == 0
 
 
 def test_cos_download_rejects_parent_paths(monkeypatch, tmp_path: Path) -> None:

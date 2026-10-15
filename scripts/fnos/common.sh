@@ -735,13 +735,13 @@ octop_prepare_docker_persist() {
     printf '%s' "$data_dir"
 }
 
-# 管理员凭据应急备份（数据目录 octop-login.txt，只随安装/设置窗口改密刷新）。
+# 管理员凭据应急备份（数据目录 login.txt，只随安装/设置窗口改密刷新）。
 # 设置窗口不再明文展示密码；本文件是找回安装密码的最后防线。
 # 调用方需保证 data_dir 已存在；文件属主交给 fix_ownership_and_perms 统一修正。
 octop_write_login_file() {
     local data_dir="$1" username="$2" password="$3" port="${4:-8089}" file
     [ -n "$data_dir" ] && [ -d "$data_dir" ] || return 0
-    file="${data_dir}/octop-login.txt"
+    file="${data_dir}/login.txt"
     cat > "$file" << EOF
 ==========================================================
  Octop 管理员登录信息（请妥善保管，勿泄露给他人）

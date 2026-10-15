@@ -188,9 +188,10 @@ export function pathPermissionKeys(pathname: string): PermissionKeys | null {
   ) {
     return PERM.knowledgeBasesPage;
   }
-  if (pathname === "/bridge" || pathname.startsWith("/bridge/")) {
-    return null;
-  }
+  // 云端协同（BETA）已彻底隐藏：/bridge 直通分支注释后由默认 return null 覆盖，语义不变
+  // if (pathname === "/bridge" || pathname.startsWith("/bridge/")) {
+  //   return null;
+  // }
   if (pathname === "/remote-desktop/desktop") {
     return PERM.desktop;
   }

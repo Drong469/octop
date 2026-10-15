@@ -343,10 +343,35 @@ def hf_cache_snapshot_dir(cache_dir: Path, hf_repo: str, *, revision: str = COS_
     repo_dir = cache_dir / ("models--" + hf_repo.replace("/", "--"))
     refs = repo_dir / "refs"
     refs.mkdir(parents=True, exist_ok=True)
-    (refs / "main").write_text(revision + "\n", encoding="utf-8")
+    # huggingface_hub >= 1.x reads refs without stripping, so a trailing newline
+    # breaks snapshot resolution (LocalEntryNotFoundError) and cache probes
+    # silently fail. Write the revision bare, matching hub's own ref writer.
+    (refs / "main").write_text(revision, encoding="utf-8")
     dest = repo_dir / "snapshots" / revision
     dest.mkdir(parents=True, exist_ok=True)
     return dest
+
+
+def heal_hf_cache_refs(cache_dir: Path) -> int:
+    """Strip trailing newlines from previously written ``refs/main`` files.
+
+    One-time self-heal for caches written before the newline bug was fixed.
+    Returns the number of refs rewritten.
+    """
+    healed = 0
+    for ref in cache_dir.glob("models--*/refs/main"):
+        try:
+            raw = ref.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        fixed = raw.strip()
+        if fixed and fixed != raw:
+            try:
+                ref.write_text(fixed, encoding="utf-8")
+            except OSError:
+                continue
+            healed += 1
+    return healed
 
 
 def _download_http_file(

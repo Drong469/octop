@@ -3,7 +3,7 @@
 # Octop 本地版 — 安装后回调
 #
 # 安装向导只收集用户自己设的管理员账号（用户名 / 密码确认，显示名与邮箱可选）。
-# 凭据写入 PKGVAR/.env 与 octop-login.txt，供首次启动 octop init 使用。
+# 凭据写入 PKGVAR/.env 与 login.txt，供首次启动 octop init 使用。
 #
 set -euo pipefail
 
@@ -71,8 +71,8 @@ chmod 600 "$ENV_FILE"
 echo "[octop-native] 已写入配置: $ENV_FILE" > "${TRIM_TEMP_LOGFILE:-/dev/null}" 2>/dev/null || true
 
 # ---------------------------------------------------------------------------
-# 管理员凭据应急备份（octop-login.txt）+ 渲染「设置」窗口用户名。
-# 忘记密码时从数据目录的 octop-login.txt 找回；设置窗口不再明文展示密码。
+# 管理员凭据应急备份（login.txt）+ 渲染「设置」窗口用户名。
+# 忘记密码时从数据目录的 login.txt 找回；设置窗口不再明文展示密码。
 # ---------------------------------------------------------------------------
 octop_write_login_file "$DATA_DIR" "$ADMIN_USER" "$ADMIN_PASS" 8089
 if [ -f "${DATA_DIR}/.octop/octop.db" ]; then

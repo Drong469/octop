@@ -235,13 +235,13 @@ OCTOP_HOME="$RUNTIME/home/.octop" \
 uv run octop run --host 127.0.0.1 --port 8799
 ```
 
-首次启动会打印一次性的设置向导密码，同时写入 `$RUNTIME/home/octop-login.txt`：
+首次启动会打印一次性的设置向导密码，同时写入 `$RUNTIME/home/login.txt`：
 
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║  Octop first-run wizard password (one-time use):          ║
 ║  xxxxxxxxxxxxxxxxxxxx                                     ║
-║  File: ~/octop-login.txt                                  ║
+║  File: ~/login.txt                                  ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
@@ -254,7 +254,7 @@ uv run octop run --host 127.0.0.1 --port 8799
 ```bash
 API=http://127.0.0.1:8799/api
 RUNTIME=/tmp/octop-ldap-dev
-PW=$(head -1 "$RUNTIME/home/octop-login.txt")
+PW=$(head -1 "$RUNTIME/home/login.txt")
 
 # 1) 校验向导密码 → 拿到一次性 wizard_token
 TOK=$(curl -sS -X POST "$API/setup/verify-password" \

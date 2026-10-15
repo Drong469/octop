@@ -7,7 +7,8 @@ const CronJobsPage = lazy(() => import("../pages/Control/CronJobs"));
 const ConnectorsPage = lazy(() => import("../pages/Agent/Connectors"));
 const SkillPackagesPage = lazy(() => import("../pages/SkillPackages"));
 const KnowledgeBasesPage = lazy(() => import("../pages/KnowledgeBases"));
-const BridgePage = lazy(() => import("../pages/Settings/Bridge"));
+// 云端协同（BETA）已彻底隐藏
+// const BridgePage = lazy(() => import("../pages/Settings/Bridge"));
 const PersonalizationPage = lazy(
   () => import("../pages/Agent/Personalization"),
 );
@@ -54,7 +55,7 @@ export const pathToKey: Record<string, string> = {
   "/connectors": "connectors",
   "/skill-packages": "skill-packages",
   "/knowledge-bases": "knowledge-bases",
-  "/bridge": "bridge",
+  // "/bridge": "bridge",  // 云端协同（BETA）已彻底隐藏
   "/personalization": "personalization",
   "/personalization/skills": "personalization",
   "/personalization/tools": "personalization",
@@ -155,7 +156,7 @@ export const routeConfigs: RouteConfig[] = [
   { path: "/connectors", element: <ConnectorsPage /> },
   { path: "/skill-packages", element: <SkillPackagesPage /> },
   { path: "/knowledge-bases", element: <KnowledgeBasesPage /> },
-  { path: "/bridge", element: <BridgePage /> },
+  // { path: "/bridge", element: <BridgePage /> },  // 云端协同（BETA）已彻底隐藏：直输 /bridge 落 404
   {
     path: "/personalization/acp",
     element: <RedirectPreserveSearch to="/acp" />,

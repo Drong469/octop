@@ -117,7 +117,7 @@ def test_seed_wizard_password_writes_volume_and_home_link(tmp_path: Path) -> Non
         },
     )
     assert result.returncode == 0, result.stderr
-    wizard = octop_home / "octop-login.txt"
+    wizard = octop_home / "login.txt"
     assert wizard.is_file()
     pw = wizard.read_text(encoding="utf-8").strip()
     assert pw
@@ -177,7 +177,7 @@ def test_first_boot_valid_password_creates_admin(tmp_path: Path, password: str) 
     assert "Octop Login Credential" in cred
     assert f"Password: {password}" in cred
     assert "Username: admin" in cred
-    assert not (octop_home / "octop-login.txt").exists()
+    assert not (octop_home / "login.txt").exists()
 
 
 @posix_only
@@ -200,7 +200,7 @@ def test_first_boot_invalid_or_missing_password_starts_wizard(
     result, octop_home = _run_first_boot(tmp_path, password=password)
     assert result.returncode == 0, result.stderr + result.stdout
     assert not (octop_home / "init-password.txt").exists()
-    wizard = octop_home / "octop-login.txt"
+    wizard = octop_home / "login.txt"
     assert wizard.is_file()
     hint = (octop_home / "credential.txt").read_text(encoding="utf-8")
     assert "Setup Required" in hint
@@ -225,7 +225,7 @@ octop_run_init() {
     )
     assert result.returncode == 0, result.stderr + result.stdout
     assert "改为启动设置向导" in result.stdout
-    assert (octop_home / "octop-login.txt").is_file()
+    assert (octop_home / "login.txt").is_file()
     assert "Setup Required" in (octop_home / "credential.txt").read_text(encoding="utf-8")
 
 
@@ -243,7 +243,7 @@ octop_run_init() {
     )
     assert result.returncode != 0
     assert "不是密码策略问题" in result.stderr
-    assert not (octop_home / "octop-login.txt").exists()
+    assert not (octop_home / "login.txt").exists()
 
 
 @posix_only

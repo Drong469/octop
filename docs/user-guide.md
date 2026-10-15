@@ -133,7 +133,7 @@ docker run -d \
 | `OCTOP_ADMIN_USERNAME` | `admin` | 首次运行管理员用户名 |
 | `OCTOP_DATA` | `~/.octop` | 宿主机数据目录（compose 挂载） |
 
-> 未设置或不合格的 `OCTOP_DEFAULT_PASSWORD` 不会静默换成随机管理员密码；打开页面走设置向导，向导口令在 `/data/.octop/octop-login.txt`。
+> 未设置或不合格的 `OCTOP_DEFAULT_PASSWORD` 不会静默换成随机管理员密码；打开页面走设置向导，向导口令在 `/data/.octop/login.txt`。
 
 ---
 
@@ -166,7 +166,7 @@ octop service start   # Linux(systemd) / macOS(launchd) / Windows 服务
 **步骤 1：设置密码（可选）**
 
 - 首次配置需要一个临时「设置密码」作为保护（默认开启）。
-- 密码打印在启动终端，并写入服务器上的引导文件（常见为 `~/octop-login.txt`）。
+- 密码打印在启动终端，并写入服务器上的引导文件（常见为 `~/login.txt`）。
 - 此步**不依赖**控制面数据库是否已打开。
 
 **步骤 2：选择控制面数据库**
@@ -301,7 +301,7 @@ octop provider --help     # 供应商增删改查帮助
 
 打开 **http://127.0.0.1:8088**，使用向导创建的账号登录。
 
-> ⚠️ **安全提醒**：Docker 若未设置合格的 `OCTOP_DEFAULT_PASSWORD`，首次打开会进入设置向导（向导口令在 `/data/.octop/octop-login.txt`，可用 `docker exec <容器> cat /data/.octop/octop-login.txt` 查看）。无论哪种方式，都请尽快在 **个人设置 → 修改密码** 中更换，避免服务暴露到公网时被未授权访问。
+> ⚠️ **安全提醒**：Docker 若未设置合格的 `OCTOP_DEFAULT_PASSWORD`，首次打开会进入设置向导（向导口令在 `/data/.octop/login.txt`，可用 `docker exec <容器> cat /data/.octop/login.txt` 查看）。无论哪种方式，都请尽快在 **个人设置 → 修改密码** 中更换，避免服务暴露到公网时被未授权访问。
 
 ![图 5.1 — 登录页面](assets/use-01-login.png)
 

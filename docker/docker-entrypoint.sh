@@ -13,7 +13,7 @@
 #
 # 首次引导（issue #502）：容器不得因弱默认密码重启循环。未设置或不合格
 # 的 OCTOP_DEFAULT_PASSWORD 不再静默换成随机管理员密码，而是把向导口令
-# 写到数据卷（/data/.octop/octop-login.txt），打开页面走设置向导。
+# 写到数据卷（/data/.octop/login.txt），打开页面走设置向导。
 # =============================================================================
 set -euo pipefail
 
@@ -22,7 +22,7 @@ OCTOP_HOME="${OCTOP_HOME:-${HOME}/.octop}"
 export OCTOP_HOME
 DB_FILE="${OCTOP_HOME}/octop.db"
 CREDENTIAL_FILE="${OCTOP_HOME}/credential.txt"
-WIZARD_FILE="${OCTOP_HOME}/octop-login.txt"
+WIZARD_FILE="${OCTOP_HOME}/login.txt"
 ADMIN_USERNAME="${OCTOP_ADMIN_USERNAME:-admin}"
 ADMIN_DISPLAY_NAME="${OCTOP_ADMIN_DISPLAY_NAME:-Admin}"
 PORT="${OCTOP_PORT:-8088}"
@@ -75,14 +75,14 @@ octop_validate_password() {
     return 0
 }
 
-# 向导口令写到数据卷，并让 $HOME/octop-login.txt 指向同一文件（服务端读 HOME）。
+# 向导口令写到数据卷，并让 $HOME/login.txt 指向同一文件（服务端读 HOME）。
 octop_seed_wizard_password() {
     mkdir -p "$OCTOP_HOME" "$HOME"
     if [ ! -s "$WIZARD_FILE" ]; then
         octop_random_password > "$WIZARD_FILE"
         chmod 600 "$WIZARD_FILE"
     fi
-    local home_file="${HOME}/octop-login.txt"
+    local home_file="${HOME}/login.txt"
     if [ "$home_file" = "$WIZARD_FILE" ]; then
         return 0
     fi
@@ -107,7 +107,7 @@ Open the dashboard and complete the setup wizard.
 
 Wizard password: ${pw}
 
-This password only unlocks the wizard (same value as octop-login.txt).
+This password only unlocks the wizard (same value as login.txt).
 Choose the admin username and password in the browser.
 EOF
     chmod 600 "$CREDENTIAL_FILE"

@@ -237,6 +237,10 @@ async function fetchAgents(): Promise<FetchAgentsResult> {
   };
 }
 
+// 云端协同（BETA）已彻底隐藏（2026-10-15）：停止拉取对端影子专家，
+// 专家列表/选择器不再出现「对端」专家。恢复时改回 false 并删除早退分支。
+const BRIDGE_HIDDEN = true;
+
 async function fetchBridgeShadowAgents(): Promise<{
   remote: OctopAgent[];
   liveConnectionIds: Set<string>;
@@ -245,6 +249,7 @@ async function fetchBridgeShadowAgents(): Promise<{
     remote: [] as OctopAgent[],
     liveConnectionIds: new Set<string>(),
   };
+  if (BRIDGE_HIDDEN) return empty;
   try {
     const { bridgeApi } = await import("../api/modules/bridge");
     const connections = await bridgeApi.list();

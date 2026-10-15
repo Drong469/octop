@@ -3,7 +3,7 @@
 # Octop — 配置后回调（应用「设置」窗口提交后执行）
 #
 # 只处理管理员改密：两栏都空则保持不变；填了则更新 docker/.env、
-# data-share 引导文件、octop-login.txt 应急备份，容器在运行时
+# data-share 引导文件、login.txt 应急备份，容器在运行时
 # docker exec ... octop user passwd。日志与 API Key 请在 Web 控制台配置。
 #
 set -euo pipefail

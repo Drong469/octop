@@ -3,7 +3,7 @@
 # Octop — 安装后回调
 #
 # 安装向导只收集用户自己设的管理员账号（用户名 / 密码确认，显示名与邮箱可选）。
-# 凭据写入 .env、data-share 引导文件与 octop-login.txt，供容器首次 init / 改密。
+# 凭据写入 .env、data-share 引导文件与 login.txt，供容器首次 init / 改密。
 #
 set -euo pipefail
 
@@ -67,7 +67,7 @@ fi
 echo "[octop] 已写入配置: $ENV_FILE（data-share=${DATA_DIR}）" > "${TRIM_TEMP_LOGFILE:-/dev/null}" 2>/dev/null || true
 
 # ---------------------------------------------------------------------------
-# 凭据应急备份（octop-login.txt）+ 渲染「设置」窗口用户名
+# 凭据应急备份（login.txt）+ 渲染「设置」窗口用户名
 # ---------------------------------------------------------------------------
 octop_write_login_file "$DATA_DIR" "$ADMIN_USER" "$ADMIN_PASS" 8088
 

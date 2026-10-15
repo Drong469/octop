@@ -11,7 +11,7 @@ import {
   Users as UsersIcon,
   Activity,
   Share2,
-  Cloudy,
+  // Cloudy,  // 云端协同（BETA）已彻底隐藏
   Sparkles,
   Puzzle,
   Package,
@@ -209,14 +209,14 @@ export function buildNavSections(
       labelKey: "nav.knowledgeBases",
     });
   }
-  // User-scoped remote Octop links — always available (like personalization).
-  settingsItems.push({
-    key: "bridge",
-    path: "/bridge",
-    icon: <Cloudy size={iconSize} strokeWidth={iconStroke} />,
-    labelKey: "nav.bridge",
-    badge: "Beta",
-  });
+  // 云端协同（BETA）已彻底隐藏（2026-10-15）：任何用户侧入口均不可见，恢复时取消注释。
+  // settingsItems.push({
+  //   key: "bridge",
+  //   path: "/bridge",
+  //   icon: <Cloudy size={iconSize} strokeWidth={iconStroke} />,
+  //   labelKey: "nav.bridge",
+  //   badge: "Beta",
+  // });
   if (settingsItems.length > 0) {
     sections.push({
       id: "settings",

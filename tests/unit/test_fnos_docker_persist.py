@@ -217,7 +217,7 @@ source "{COMMON_SH}"
 octop_write_login_file "{tmp_path}" alice WizardPass1 8088
 """
     subprocess.check_call(["bash", "-c", script])
-    text = (tmp_path / "octop-login.txt").read_text(encoding="utf-8")
+    text = (tmp_path / "login.txt").read_text(encoding="utf-8")
     assert "管理员账号：alice" in text
     assert "管理员密码：WizardPass1" in text
     assert "http://<飞牛IP>:8088" in text

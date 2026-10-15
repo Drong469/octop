@@ -621,7 +621,7 @@
     },
     "password": {
       "title": "Set Login Password",
-      "desc": "An initial password was randomly generated and saved to ~/octop-login.txt. Please enter it in the \"Current Password\" field below, then set your new password.",
+      "desc": "An initial password was randomly generated and saved to ~/login.txt. Please enter it in the \"Current Password\" field below, then set your new password.",
       "currentPassword": "Current Password",
       "newPassword": "New Password",
       "confirmPassword": "Confirm New Password",
@@ -4980,7 +4980,7 @@
       "hint": "On first start, MetaControl AI prints a one-time bootstrap password in the server terminal and writes it to the file below.",
       "whereTitle": "Where is the password?",
       "wherePath": "On the server, open {{path}} or check the yellow banner printed when MetaControl AI starts.",
-      "whereDefault": "On the server, open ~/.octop/octop-login.txt or check the yellow banner printed when MetaControl AI starts.",
+      "whereDefault": "On the server, open ~/.octop/login.txt or check the yellow banner printed when MetaControl AI starts.",
       "missingFile": "Bootstrap password file not found. Restart the server with no users to regenerate it.",
       "wrong": "Wrong password.",
       "rateLimited": "Too many attempts. Wait a minute and try again.",

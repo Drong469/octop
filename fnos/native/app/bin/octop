@@ -109,7 +109,7 @@ octop_cmd() {
 #   1) .env 未写密码（旧包/异常安装）→ 自动生成随机密码；
 #   2) init 因密码策略被拒（如旧版写死的 Octop123 在弱密码黑名单内，
 #      报 "password is too common"）→ 换随机强密码重试一次；
-#   3) 重试后同步回写 .env 与 octop-login.txt 回落备份，保证凭据一致、用户不丢密码。
+#   3) 重试后同步回写 .env 与 login.txt 回落备份，保证凭据一致、用户不丢密码。
 if [ ! -f "$OCTOP_HOME/octop.db" ]; then
     echo "[octop-native] 首次启动，正在初始化管理员账号 ..."
     INIT_PW="${OCTOP_DEFAULT_PASSWORD:-}"

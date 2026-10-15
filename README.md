@@ -270,7 +270,7 @@ octop run --host 0.0.0.0 --port 8088
 octop service start
 ```
 
-Open **http://127.0.0.1:8088**. With Docker, a valid `OCTOP_DEFAULT_PASSWORD` creates the admin on first boot (credentials in `/data/.octop/credential.txt`); if it is unset or rejected, open the setup wizard (unlock password in `/data/.octop/octop-login.txt`). Interactive `octop init` / the setup wizard asks you to choose a password (≥8 characters, letters and digits).
+Open **http://127.0.0.1:8088**. With Docker, a valid `OCTOP_DEFAULT_PASSWORD` creates the admin on first boot (credentials in `/data/.octop/credential.txt`); if it is unset or rejected, open the setup wizard (unlock password in `/data/.octop/login.txt`). Interactive `octop init` / the setup wizard asks you to choose a password (≥8 characters, letters and digits).
 
 ### Docker (recommended for production)
 
@@ -288,7 +288,7 @@ docker run -d \
   octop:latest
 ```
 
-Open `http://localhost:8088`. A valid `OCTOP_DEFAULT_PASSWORD` creates the admin on first boot and writes credentials to `/data/.octop/credential.txt`. If it is unset or rejected by the password policy, no admin is created — complete the setup wizard (unlock password in `/data/.octop/octop-login.txt`). Override the username via `OCTOP_ADMIN_USERNAME`.
+Open `http://localhost:8088`. A valid `OCTOP_DEFAULT_PASSWORD` creates the admin on first boot and writes credentials to `/data/.octop/credential.txt`. If it is unset or rejected by the password policy, no admin is created — complete the setup wizard (unlock password in `/data/.octop/login.txt`). Override the username via `OCTOP_ADMIN_USERNAME`.
 
 > **Password policy:** at least 8 characters with letters and digits.
 

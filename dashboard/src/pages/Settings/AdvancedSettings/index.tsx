@@ -66,9 +66,10 @@ export default function AdvancedSettingsPage() {
   if (moved === "voice" || moved === "search") {
     return <Navigate to={`/admin/models?tab=${moved}`} replace />;
   }
-  if (moved === "bridge") {
-    return <Navigate to="/bridge" replace />;
-  }
+  // 云端协同（BETA）已彻底隐藏：旧 tab 入口不再跳转
+  // if (moved === "bridge") {
+  //   return <Navigate to="/bridge" replace />;
+  // }
 
   if (forbidden) return <ForbiddenPage />;
 

@@ -60,7 +60,7 @@ def init(
     paths = PathLayout.from_env()
     home = paths.root
 
-    # Sidecar files (octop-login.txt, NAS share metadata) must not block first
+    # Sidecar files (login.txt, NAS share metadata) must not block first
     # bootstrap. Only an existing control-plane DB counts as an install.
     has_db = (home / "octop.db").is_file()
     if home.exists() and any(home.iterdir()):

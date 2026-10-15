@@ -26,7 +26,9 @@ type Settings struct {
 
 func defaultSettings() Settings {
 	return Settings{
-		Locale:         LocaleEN,
+		// Product default: Chinese first-run experience (P1). Users can still
+		// switch to English in the settings window; the choice persists.
+		Locale:         LocaleZH,
 		Autostart:      false,
 		MinimizeToTray: true,
 		PreventSleep:   false,

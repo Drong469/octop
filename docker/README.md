@@ -26,7 +26,7 @@ From the repository root:
 docker compose -f docker/docker-compose.yml up -d --build
 ```
 
-Open `http://localhost:8088`. A valid `OCTOP_DEFAULT_PASSWORD` (≥8 characters with letters and digits) creates the admin on first boot and writes credentials to `/data/.octop/credential.txt`. If the variable is unset, or the password fails policy (too short, missing letters/digits, or a common password), **no** admin is created — open the dashboard and complete the setup wizard. The wizard unlock password is in `/data/.octop/octop-login.txt` (also noted in `credential.txt`).
+Open `http://localhost:8088`. A valid `OCTOP_DEFAULT_PASSWORD` (≥8 characters with letters and digits) creates the admin on first boot and writes credentials to `/data/.octop/credential.txt`. If the variable is unset, or the password fails policy (too short, missing letters/digits, or a common password), **no** admin is created — open the dashboard and complete the setup wizard. The wizard unlock password is in `/data/.octop/login.txt` (also noted in `credential.txt`).
 
 **Option 2: Build script**
 
@@ -71,7 +71,7 @@ For Compose, put these in `docker/.env`. Values only reach the container if list
 
 - Compose mounts host `~/.octop` → container `/data/.octop`
 - `docker run` example uses named volume `octop-data`
-- First boot: a valid `OCTOP_DEFAULT_PASSWORD` runs `octop init` and writes `credential.txt`; unset or rejected passwords skip admin creation and write the wizard unlock password to `/data/.octop/octop-login.txt`. The container does not exit because of a weak default.
+- First boot: a valid `OCTOP_DEFAULT_PASSWORD` runs `octop init` and writes `credential.txt`; unset or rejected passwords skip admin creation and write the wizard unlock password to `/data/.octop/login.txt`. The container does not exit because of a weak default.
 
 ### Health check
 
