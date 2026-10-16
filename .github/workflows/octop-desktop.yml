@@ -303,7 +303,8 @@ jobs:
       - name: Upload bundled desktop package
         uses: actions/upload-artifact@v7
         with:
-          path: desktop/src/bin/Octop-desktop-${{ matrix.plat }}-${{ env.OCTOP_VERSION }}.*
+          # APP_NAME is rebranded (元控智能) — glob loosely instead of the Octop prefix
+          path: desktop/src/bin/*-desktop-${{ matrix.plat }}-${{ env.OCTOP_VERSION }}.*
           archive: false
           if-no-files-found: error
           retention-days: 14
